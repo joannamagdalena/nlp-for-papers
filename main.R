@@ -14,6 +14,12 @@ library(textstem)
 library(igraph)
 library(ggraph)
 
+source("loading_files.R")
+
+# loading pdf files
+paths <- c("C:/.../x.pdf", "C:/.../y.pdf", "C:/.../z.pdf")
+pdf_files <- loading_pdf_files(paths = paths)
+
 # loading and pre-processing the pdf file
 pdf_file <- pdf_text("C:/.../x.pdf")
 pdf_file <- tolower(gsub("[\r\n]", " ", paste(pdf_file, collapse=" ")))
