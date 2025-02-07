@@ -15,16 +15,15 @@ library(igraph)
 library(ggraph)
 
 source("loading_files.R")
+source("preprocessing.R")
 
-# loading pdf files
+# loading PDF files
 paths <- c("C:/.../x.pdf", "C:/.../y.pdf", "C:/.../z.pdf")
 pdf_files <- loading_pdf_files(paths = paths)
 
-# loading and pre-processing the pdf file
-pdf_file <- pdf_text("C:/.../x.pdf")
-pdf_file <- tolower(gsub("[\r\n]", " ", paste(pdf_file, collapse=" ")))
-pdf_file <- removePunctuation(pdf_file)
-pdf_file <- removeNumbers(pdf_file)
+# pre-processing the PDF files
+pdf_files <- preprocessing_of_pdf_files(pdf_files = pdf_files)
+pdf_file <- pdf_files[1]
 
 # lemmatization
 pdf_file_unlist <- unlist(strsplit(pdf_file, " "))
