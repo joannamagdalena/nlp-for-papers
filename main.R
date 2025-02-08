@@ -23,24 +23,23 @@ pdf_files <- loading_pdf_files(paths = paths)
 
 # pre-processing the PDF files
 pdf_files <- preprocessing_of_pdf_files(pdf_files = pdf_files)
-pdf_file <- pdf_files[1]
 
-# lemmatization
-pdf_file_unlist <- unlist(strsplit(pdf_file, " "))
-pdf_file_lemmatized <- lemmatize_words(pdf_file_unlist)
+pdf_file <- pdf_text("C:/.../x.pdf")
+pdf_file <- tolower(gsub("[\r\n]", " ", paste(pdf_file, collapse=" ")))
+pdf_file <- removePunctuation(pdf_file)
+pdf_file <- removeNumbers(pdf_file)
 
-# tokenization and removing the stop words, with bigrams
-pdf_file_tokenized <- tibble(text = pdf_file_lemmatized) %>% unnest_tokens(word, text)
+# tokenization and removing the stop words for bigrams
 pdf_file_tokenized_bigrams <- tibble(text = pdf_file) %>% unnest_tokens(bigram, text, token = "ngrams", n = 2)
 
 stop_words <- stopwords("en") %>% tibble(word = .)
-pdf_file_tokenized <- anti_join(pdf_file_tokenized, stop_words, by = "word")
 pdf_file_tokenized_bigrams <- pdf_file_tokenized_bigrams %>% separate(bigram, c("word1", "word2"), sep = " ")
 pdf_file_tokenized_bigrams <- pdf_file_tokenized_bigrams %>% filter(!word1 %in% stop_words$word) %>% filter(!word2 %in% stop_words$word)
 pdf_file_tokenized_bigrams <- pdf_file_tokenized_bigrams %>% filter(!is.na(word1)) %>% filter(!is.na(word2))
 pdf_file_tokenized_bigrams_united <- pdf_file_tokenized_bigrams %>% unite(bigram, word1, word2, sep = " ")
 
 # frequency of words and bigrams
+pdf_file_tokenized <- pdf_files[1]
 word_counts <- pdf_file_tokenized %>% count(word, sort = TRUE)
 word_counts <- mutate(word_counts, freq = n/sum(n))
 bigram_counts <- pdf_file_tokenized_bigrams_united %>% count(bigram, sort = TRUE)
