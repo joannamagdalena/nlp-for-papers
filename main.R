@@ -13,6 +13,7 @@ library(dplyr)
 library(textstem)
 library(igraph)
 library(ggraph)
+library(tibble)
 
 source("loading_files.R")
 source("preprocessing.R")
@@ -23,6 +24,16 @@ pdf_files <- loading_pdf_files(paths = paths)
 
 # pre-processing the PDF files
 pdf_files <- preprocessing_of_pdf_files(pdf_files = pdf_files)
+
+# frequency of words
+word_counts <- list()
+for (i in 1:length(preprocessed_pdf_files)){
+  word_counts[[i]] <- tibble(text = preprocessed_pdf_files[[i]]) %>% 
+    unnest_tokens(word, text) %>% 
+    count(word, sort = TRUE)
+}
+
+######## bigrams
 
 pdf_file <- pdf_text("C:/.../x.pdf")
 pdf_file <- tolower(gsub("[\r\n]", " ", paste(pdf_file, collapse=" ")))

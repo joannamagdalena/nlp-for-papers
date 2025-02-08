@@ -20,7 +20,7 @@ removing_stop_words <- function(the_text){
 
 # pre-processing the pdf files
 preprocessing_of_pdf_files <- function(pdf_files){
-  pdf_files_prepared <- character()
+  pdf_files_prepared <- list()
   for (pdf_file in pdf_files){
     pdf_file <- tolower(pdf_file)
     pdf_file <- removePunctuation(pdf_file)
