@@ -23,7 +23,7 @@ paths <- c("C:/.../x.pdf", "C:/.../y.pdf", "C:/.../z.pdf")
 pdf_files <- loading_pdf_files(paths = paths)
 
 # pre-processing the PDF files
-pdf_files <- preprocessing_of_pdf_files(pdf_files = pdf_files)
+preprocessed_pdf_files <- preprocessing_of_pdf_files(pdf_files = pdf_files)
 
 # frequency of words
 word_counts <- list()
@@ -32,6 +32,10 @@ for (i in 1:length(preprocessed_pdf_files)){
     unnest_tokens(word, text) %>% 
     count(word, sort = TRUE)
 }
+
+# LDA
+source("LDA.R")
+LDA_modelling(word_counts)
 
 ######## bigrams
 
