@@ -1,9 +1,14 @@
 library(topicmodels)
 library(textdata)
 
-LDA_modelling <- function(word_counts){
+LDA_modelling <- function(word_counts, bigrams){
   word_counts_df <- bind_rows(word_counts, .id = "document")
-  dtm <- word_counts_df %>% cast_dtm(document = "word", term = "word", value = "n")
+  if (bigrams == TRUE) {
+    dtm <- word_counts_df %>% cast_dtm(document = "document", term = "bigram", value = "n")
+  }
+  else {
+    dtm <- word_counts_df %>% cast_dtm(document = "word", term = "word", value = "n")
+  }
   
   k <- 5
   lda_model <- LDA(dtm, k = k, control = list(seed = 1234))  
