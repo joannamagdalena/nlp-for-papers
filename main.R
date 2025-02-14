@@ -44,9 +44,9 @@ for (i in 1:length(preprocessed_pdf_files_bigrams)){
 
 # LDA
 source("LDA.R")
-LDA_modelling(word_counts, FALSE)
-LDA_modelling(bigram_counts, TRUE)
-
+k <- 5
+LDA_modeling(word_counts, k, FALSE)
+LDA_modeling(bigram_counts, k, TRUE)
 
 
 ######## 
