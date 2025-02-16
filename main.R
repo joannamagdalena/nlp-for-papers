@@ -5,6 +5,9 @@ library(tidyverse)
 library(ggplot2)
 library(dplyr)
 library(textstem)
+library(wordcloud)
+library(RColorBrewer)
+library(wordcloud2)
 
 source("loading_files.R")
 source("preprocessing.R")
@@ -17,6 +20,7 @@ pdf_files <- loading_pdf_files(path = folder_path)
 preprocessed_pdf_files <- preprocessing_of_pdf_files(pdf_files = pdf_files, bigrams = FALSE)
 preprocessed_pdf_files_bigrams <- preprocessing_of_pdf_files(pdf_files = pdf_files, bigrams = TRUE)
 
+
 # frequency of words
 word_counts <- list()
 for (i in 1:length(preprocessed_pdf_files)){
@@ -25,6 +29,11 @@ for (i in 1:length(preprocessed_pdf_files)){
     count(word, sort = TRUE)
 }
 
+# examples of word clouds for unigrams (from the first paper in the dataset)
+wordcloud(words = word_counts[[1]]$word, freq = word_counts[[1]]$n, min.freq = 0.005, max.words=40, colors = brewer.pal(3, "Set2"))
+wordcloud2(data = word_counts[[1]], size = 0.8, color = "white", backgroundColor = "blue")
+
+
 # frequency of bigrams
 bigram_counts <- list()
 for (i in 1:length(preprocessed_pdf_files_bigrams)){
@@ -32,6 +41,10 @@ for (i in 1:length(preprocessed_pdf_files_bigrams)){
     unnest_tokens(bigram, text, token = "ngrams", n = 2) %>% 
     count(bigram, sort = TRUE)
 }
+
+# example of a word cloud for bigrams (from the first paper in the dataset)
+wordcloud2(data = bigram_counts[[1]], size = 0.8, color = "white", backgroundColor = "red")
+
 
 ### LDA + coherence score
 source("LDA.R")
@@ -45,47 +58,3 @@ LDA_bigrams <- LDA_modeling(bigram_counts, k, TRUE)
 LDA_plot(LDA_bigrams[1])
 print(LDA_bigrams[2])
 
-
-######## 
-library(wordcloud)
-library(wordcloud2)
-library(RColorBrewer)
-library(tokenizers)
-library(hash)
-library(stringr)
-
-library(igraph)
-library(ggraph)
-library(tibble)
-
-words_filtered <- mutate(word_counts[[1]], freq = n/sum(n))
-words_filtered <- words_filtered %>% filter(freq > 0.005 & freq <= 0.02)
-
-# visualization (barplot)
-ggplot(words_filtered, aes(x = reorder(word,-n), y = n)) + geom_bar(stat = "identity") + labs(title = "Filtered words", x = "Word", y = "Number")
-
-# word clouds
-wordcloud(words = words_filtered$word, freq = words_filtered$n, min.freq = 0.005, max.words=30, colors = brewer.pal(3, "Set2"))
-wordcloud2(data = words_filtered, size = 0.8, color = "white", backgroundColor = "blue")
-wordcloud2(data = bigram_counts[[1]], size = 0.8, color = "white", backgroundColor = "red")
-
-# correlations between words
-pdf_file <- pdf_text("C:/.../x.pdf")
-pdf_file <- tolower(gsub("[\r\n]", " ", paste(pdf_file, collapse=" ")))
-pdf_file <- removePunctuation(pdf_file)
-pdf_file <- removeNumbers(pdf_file)
-
-pdf_file_tokenized_bigrams <- tibble(text = pdf_file) %>% unnest_tokens(bigram, text, token = "ngrams", n = 2)
-
-stop_words <- stopwords("en") %>% tibble(word = .)
-pdf_file_tokenized_bigrams <- pdf_file_tokenized_bigrams %>% separate(bigram, c("word1", "word2"), sep = " ")
-pdf_file_tokenized_bigrams <- pdf_file_tokenized_bigrams %>% filter(!word1 %in% stop_words$word) %>% filter(!word2 %in% stop_words$word)
-pdf_file_tokenized_bigrams <- pdf_file_tokenized_bigrams %>% filter(!is.na(word1)) %>% filter(!is.na(word2))
-
-bigram_counts_sep <- pdf_file_tokenized_bigrams %>% count(word1, word2, sort = TRUE)
-bigram_graph <- bigram_counts_sep %>% filter(n > 10) %>% graph_from_data_frame()
-ggraph(bigram_graph, layout = "fr") + 
-  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE, arrow = grid::arrow(type="closed", length=unit(2, "mm"))) + 
-  geom_node_point() + 
-  geom_node_text(aes(label=name), vjust=1, hjust=1) + 
-  theme_void()

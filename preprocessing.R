@@ -18,7 +18,7 @@ text_tokenization <- function(the_text, bigrams){
 
 # removing the stop words
 removing_stop_words <- function(the_text, bigrams){
-  stop_words <- stopwords("en") %>% tibble(word = .)
+  stop_words <- c(stopwords("en"), "et", "al", "x", "y", "i", "j", "k") %>% tibble(word = .)
   if (bigrams == TRUE){
     the_text_without_stopwords <- the_text %>% separate(bigram, c("word1", "word2"), sep = " ") %>% 
       filter(!word1 %in% stop_words$word) %>% 
