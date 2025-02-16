@@ -10,8 +10,8 @@ source("loading_files.R")
 source("preprocessing.R")
 
 # loading PDF files
-paths <- c("C:/.../x.pdf", "C:/.../y.pdf", "C:/.../z.pdf")
-pdf_files <- loading_pdf_files(paths = paths)
+folder_path = "C:/.../"
+pdf_files <- loading_pdf_files(path = folder_path)
 
 # pre-processing the PDF files
 preprocessed_pdf_files <- preprocessing_of_pdf_files(pdf_files = pdf_files, bigrams = FALSE)
