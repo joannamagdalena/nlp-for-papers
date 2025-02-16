@@ -33,11 +33,17 @@ for (i in 1:length(preprocessed_pdf_files_bigrams)){
     count(bigram, sort = TRUE)
 }
 
-# LDA
+### LDA + coherence score
 source("LDA.R")
 k <- 5
-LDA_modeling(word_counts, k, FALSE)
-LDA_modeling(bigram_counts, k, TRUE)
+
+LDA_unigrams <- LDA_modeling(word_counts, k, FALSE)
+LDA_plot(LDA_unigrams[1])
+print(LDA_unigrams[2])
+
+LDA_bigrams <- LDA_modeling(bigram_counts, k, TRUE)
+LDA_plot(LDA_bigrams[1])
+print(LDA_bigrams[2])
 
 
 ######## 
