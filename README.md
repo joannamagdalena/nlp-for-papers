@@ -16,6 +16,7 @@ Repository structure:
 - main.R - NPL model implementation
 - preprocessing.R - data preprocessing
 - LDA.R - LDA model, with visualization
+- tf-idf.R - visualization of high tf-idf words
 - README.md
 
 ---
