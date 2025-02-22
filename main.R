@@ -8,6 +8,10 @@ library(textstem)
 library(wordcloud)
 library(RColorBrewer)
 library(wordcloud2)
+library(widyr)
+library(ggraph)
+library(igraph)
+library(tibble)
 
 source("loading_files.R")
 source("preprocessing.R")
@@ -44,6 +48,26 @@ for (i in 1:length(preprocessed_pdf_files_bigrams)){
 
 # example of a word cloud for bigrams (from the first paper in the dataset)
 wordcloud2(data = bigram_counts[[1]], size = 0.8, color = "white", backgroundColor = "red")
+
+# correlation - bigrams (for the first paper in the dataset)
+bigram_cor <- list()
+for (i in 1:length(preprocessed_pdf_files_bigrams)){
+  preprocessed_pdf_files_bigrams_sep <- tibble(bigram = preprocessed_pdf_files_bigrams[[i]]) %>% 
+                                        separate(bigram, c("word1", "word2"), sep = " ")
+  bigram_cor[[i]] <- preprocessed_pdf_files_bigrams_sep %>% 
+                    pairwise_cor(word1, word2)
+}
+bigram_graph_list <- list() 
+for (i in 1:length(bigram_cor)){
+  bigram_graph_list[[i]] <- bigram_cor[[i]] %>% 
+                            filter(correlation > 0.8) %>%
+                            graph_from_data_frame()
+}
+ggraph(bigram_graph_list[[1]], layout = "fr") + 
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE, arrow = grid::arrow(type="closed", length=unit(2, "mm"))) + 
+  geom_node_point() + 
+  geom_node_text(aes(label=name), vjust=1, hjust=1) + 
+  theme_void()
 
 
 ### LDA + coherence score
