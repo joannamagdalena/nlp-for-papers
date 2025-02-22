@@ -37,6 +37,8 @@ for (i in 1:length(preprocessed_pdf_files)){
 wordcloud(words = word_counts[[1]]$word, freq = word_counts[[1]]$n, min.freq = 0.005, max.words=40, colors = brewer.pal(3, "Set2"))
 wordcloud2(data = word_counts[[1]], size = 0.8, color = "white", backgroundColor = "blue")
 
+# tf-idf
+tf_idf_visualization(pdf_files)
 
 # frequency of bigrams
 bigram_counts <- list()
