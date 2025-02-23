@@ -1,5 +1,4 @@
 library(topicmodels)
-library(textdata)
 
 library(textmineR)
 library(Matrix)
@@ -27,7 +26,7 @@ LDA_modeling <- function(word_counts, k, bigrams){
 }
 
 LDA_plot <- function(model) {
-  topics <- tidy(lda_model, matrix = "beta")
+  topics <- tidy(model, matrix = "beta")
   topics %>%
     group_by(topic) %>%
     slice_max(beta, n = 10) %>%

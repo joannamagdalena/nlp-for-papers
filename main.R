@@ -38,6 +38,7 @@ wordcloud(words = word_counts[[1]]$word, freq = word_counts[[1]]$n, min.freq = 0
 wordcloud2(data = word_counts[[1]], size = 0.8, color = "white", backgroundColor = "blue")
 
 # tf-idf
+source("tf-idf.R")
 tf_idf_visualization(pdf_files)
 
 # frequency of bigrams
@@ -77,10 +78,10 @@ source("LDA.R")
 k <- 5
 
 LDA_unigrams <- LDA_modeling(word_counts, k, FALSE)
-LDA_plot(LDA_unigrams[1])
+LDA_plot(LDA_unigrams[[1]])
 print(LDA_unigrams[2])
 
 LDA_bigrams <- LDA_modeling(bigram_counts, k, TRUE)
-LDA_plot(LDA_bigrams[1])
+LDA_plot(LDA_bigrams[[1]])
 print(LDA_bigrams[2])
 
