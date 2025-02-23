@@ -6,7 +6,7 @@ NLP for Scientific Papers is a project focused on analysis of scientific article
 
 Languages and packages used:
 
-- R (pdftools, tm, textstem, dplyr, tidytext, ggplot2, topicmodels, tidyverse)
+- R (pdftools, tm, textstem, dplyr, tidytext, ggplot2, topicmodels, tidyverse, textmineR, Matrix, slam, wordcloud, RColorBrewer, wordcloud2, widyr, ggraph, igraph, tibble)
 
 ---
 
